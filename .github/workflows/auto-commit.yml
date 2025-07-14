@@ -1,35 +1,35 @@
 name: Auto Commit
 
+permissions:
+  contents: write
+
 on:
   schedule:
-    - cron: '0 17 * * *' 
+    - cron: '0 17 * * *'
   workflow_dispatch:
 
 jobs:
   auto-commit:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Set Git identity
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Update file
         run: |
-          "Last active: $(Get-Date -Format u)" | Out-File -Encoding utf8 active.txt
+          echo "Last active: $(date -u +"%Y-%m-%d %H:%M:%SZ")" > active.txt
 
-      - name: Commit and push
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      - name: Configure Git
         run: |
-          git config --global user.name "Xyro"
-          git config --global user.email "xyro@example.com"
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/XyroFedaliz/Alive.git
-          git add .
-          git commit -m "🤖 Auto commit: $(Get-Date -Format u)"
-          git push origin main
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
 
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "🤖 Auto commit: $(date -u +"%Y-%m-%d %H:%M:%SZ")" || echo "No changes to commit"
+
+      - name: Push changes
+        run: |
+          git push
