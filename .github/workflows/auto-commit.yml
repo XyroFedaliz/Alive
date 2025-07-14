@@ -1,35 +1,45 @@
 name: Auto Commit
 
-permissions:
-  contents: write
-
 on:
+  push:
+    branches:
+      - main
+      
   schedule:
-    - cron: '0 17 * * *'
-  workflow_dispatch:
+    - cron: "0 7,9,11 * * *"
 
 jobs:
-  auto-commit:
+  auto_commit:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
-      - name: Update file
+      - name: active.txt
         run: |
-          echo "Last active: $(date -u +"%Y-%m-%d %H:%M:%SZ")" > active.txt
+          echo "Last active: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > active.txt
 
-      - name: Configure Git
+      - name: Setup Git config
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "Xyro"
+          git config --local user.email "xyro-bot@users.noreply.github.com"
 
-      - name: Commit changes
+      - name: Commit changes with random emoji
         run: |
-          git add .
-          git commit -m "commit: $(date -u +"%Y-%m-%d %H:%M:%SZ")" || echo "No changes to commit"
+          git add -A
 
-      - name: Push changes
-        run: |
-          git push
+          emojis=("🔥" "💡" "🎉" "🤖" "🟩" "📦" "🔁" "✨" "📌" "💾")
+          messages=("Auto update" "Update timestamp" "Keep alive" "Routine commit" "Cron triggered")
+
+          emoji=${emojis[$RANDOM % ${#emojis[@]}]}
+          message=${messages[$RANDOM % ${#messages[@]}]}
+
+          git commit -m "chore(bot): $emoji $message" || echo "No changes to commit"
+
+      - name: Push changes to GitHub
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
