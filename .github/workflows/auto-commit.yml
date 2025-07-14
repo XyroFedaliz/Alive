@@ -22,16 +22,15 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name 'Xyro'
-          git config user.email 'Xyro[bot]@users.noreply.github.com'
-
-      - name: Pull latest changes
-        run: git pull origin main
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Commit changes
         run: |
           git add .
-          git commit -m "commit: $(date -u +"%Y-%m-%d %H:%M:%SZ")" || echo "No changes to commit"
+          git commit -m "🤖 Auto commit: $(date -u +"%Y-%m-%d %H:%M:%SZ")" || echo "No changes to commit"
 
-      - name: Push changes
-        run: git push
+      - name: Pull and push changes
+        run: |
+          git pull --rebase
+          git push
