@@ -26,7 +26,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          git config --global user.name "Xyro"
+          git config --global user.email "xyro@example.com"
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/XyroFedaliz/Alive.git
           git add .
           git commit -m "🤖 Auto commit: $(Get-Date -Format u)"
           git push origin main
+
