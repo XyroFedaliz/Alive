@@ -23,7 +23,10 @@ jobs:
           "Last active: $(Get-Date -Format u)" | Out-File -Encoding utf8 active.txt
 
       - name: Commit and push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/XyroFedaliz/Alive.git
           git add .
           git commit -m "🤖 Auto commit: $(Get-Date -Format u)"
-          git push
+          git push origin main
