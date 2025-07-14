@@ -1,0 +1,29 @@
+name: Auto Commit
+
+on:
+  schedule:
+    - cron: '0 17 * * *' 
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update file
+        run: |
+          "Last active: $(Get-Date -Format u)" | Out-File -Encoding utf8 active.txt
+
+      - name: Commit and push
+        run: |
+          git add .
+          git commit -m "🤖 Auto commit: $(Get-Date -Format u)"
+          git push
