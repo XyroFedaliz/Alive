@@ -6,10 +6,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  auto-commit:
+  auto_commit:
+    if: github.actor != 'xyro-bot'
     runs-on: ubuntu-latest
-
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
@@ -22,10 +28,14 @@ jobs:
 
       - name: Update active.txt
         run: |
-          echo "Active check at $(date)" >> active.txt
+          echo "Last active: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > active.txt
 
       - name: Commit and Push
         run: |
-          git add active.txt
-          git commit -m "chore: update active.txt at $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git add -A
+          emojis=("🔥" "💡" "🎉" "🤖" "🟩" "📦" "🔁" "✨" "📌" "💾")
+          messages=("Auto update")
+          emoji=${emojis[$RANDOM % ${#emojis[@]}]}
+          message=${messages[$RANDOM % ${#messages[@]}]}
+          git commit -m "chore(bot): $emoji $message" || echo "No changes to commit"
           git push
