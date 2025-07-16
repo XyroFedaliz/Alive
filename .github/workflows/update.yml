@@ -1,0 +1,31 @@
+name: Commit-bro
+
+on:
+  schedule:
+    - cron: "0 5 * * *" 
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git user
+        run: |
+          git config --global user.name "XyroBot"
+          git config --global user.email "bot@example.com"
+
+      - name: Update active.txt
+        run: |
+          echo "Active check at $(date)" >> active.txt
+
+      - name: Commit and Push
+        run: |
+          git add active.txt
+          git commit -m "chore: update active.txt at $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push
