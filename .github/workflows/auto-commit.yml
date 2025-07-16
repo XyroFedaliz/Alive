@@ -9,6 +9,7 @@ on:
 
 jobs:
   auto_commit:
+    if: github.actor != 'xyro-bot'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,5 +39,5 @@ jobs:
       - name: Push changes to GitHub
         uses: ad-m/github-push-action@v0.6.0
         with:
-          github_token: ${{  }}
+          github_token: ${{ secrets.GH_TOKEN }}
           branch: main
