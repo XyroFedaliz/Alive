@@ -35,5 +35,9 @@ jobs:
           message=${messages[$RANDOM % ${#messages[@]}]}
           git commit -m "chore(bot): $emoji $message" || echo "No changes to commit"
 
-      - name: Push changes
-        run: git push origin main
+      - name: Push changes to GitHub
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: main
+
