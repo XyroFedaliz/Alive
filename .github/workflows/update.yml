@@ -19,12 +19,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Setup Git user
         run: |
           git config --global user.name "XyroBot"
-          git config --global user.email "bot@example.com"
+          git config --global user.email "XyroBot@xxxxx.com"
 
       - name: Update active.txt
         run: |
@@ -37,5 +37,5 @@ jobs:
           messages=("Auto update")
           emoji=${emojis[$RANDOM % ${#emojis[@]}]}
           message=${messages[$RANDOM % ${#messages[@]}]}
-          git commit -m "chore(bot): $emoji $message" || echo "No changes to commit"
+          git commit -m "XyroBot: $emoji $message" || echo "No changes to commit"
           git push
