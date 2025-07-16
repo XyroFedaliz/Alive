@@ -1,0 +1,43 @@
+name: Auto Commit
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 7,9,11 * * *"
+
+jobs:
+  auto_commit:
+    if: github.actor != 'xyro-bot'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Update activity timestamp
+        run: |
+          echo "Last active: $(date -u +"%Y-%m-%dT%H:%M:%SZ")" > active.txt
+
+      - name: Setup Git config
+        run: |
+          git config --local user.name "Xyro"
+          git config --local user.email "xyro-bot@users.noreply.github.com"
+
+      - name: Commit changes with random emoji
+        run: |
+          git add -A
+          emojis=("🔥" "💡" "🎉" "🤖" "🟩" "📦" "🔁" "✨" "📌" "💾")
+          messages=("Auto update" "Update timestamp" "Keep alive" "Routine commit" "Cron triggered")
+          emoji=${emojis[$RANDOM % ${#emojis[@]}]}
+          message=${messages[$RANDOM % ${#messages[@]}]}
+          git commit -m "chore(bot): $emoji $message" || echo "No changes to commit"
+
+      - name: Push changes to GitHub
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          branch: main
