@@ -2,7 +2,7 @@ name: Commit-bro
 
 on:
   schedule:
-    - cron: "0 5 * * *" 
+    - cron: "0 7,9,11 * * *"
   workflow_dispatch:
 
 jobs:
